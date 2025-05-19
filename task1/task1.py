@@ -1,4 +1,5 @@
 import collections
+import sys
 
 
 def path_way(count, step):
@@ -13,8 +14,8 @@ def path_way(count, step):
 
 
 def main():
-    n, m = int(input()), int(input())
-    print(path_way(n, m))
+    n, m = int(sys.argv[1]), int(sys.argv[2])
+    print(''.join(map(str, path_way(n, m))))
 
 
 main()
