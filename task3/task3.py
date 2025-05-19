@@ -1,29 +1,37 @@
 import json
+import sys
 
 
 def change_value(tests, values):
-    new_list = []
-    for i in tests:
-        for key in values:
-            if i['id'] == key['id']:
-                i.update({'value': key['value']})
-                new_list.append(i)
-            if 'values' in i:
-                change_value(i['values'], values)
-    return new_list
+    values_dict = {item['id']: item['value'] for item in values}
+
+    def get_values(tests):
+        for test in tests:
+            test_id = test.get('id')
+            if test_id in values_dict:
+                test['value'] = values_dict[test_id]
+            if 'values' in test:
+                get_values(test['values'])
+
+    get_values(tests)
+    return tests
 
 
 def main():
-    with open('tests.json', 'r') as ts:
-        test_py = json.load(ts)['tests']
+    if len(sys.argv) != 4:
+        print('Данных недостаточно!')
+        sys.exit(1)
 
-    with open('values.json', 'r') as vl:
-        values_py = json.load(vl)['values']
+    with open(sys.argv[1], 'r', encoding='utf-8') as file:
+        test_py = json.load(file)
 
-    data = {'tests': change_value(test_py, values_py)}
+    with open(sys.argv[2], 'r', encoding='utf-8') as file:
+        values_py = json.load(file)
 
-    with open('report.json', 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=2)
+    data = change_value(test_py['tests'], values_py['values'])
+
+    with open(sys.argv[3], 'w', encoding='utf-8') as file:
+        json.dump({'tests': data}, file, indent=2)
 
 
 main()
