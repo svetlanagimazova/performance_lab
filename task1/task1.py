@@ -14,6 +14,10 @@ def path_way(count, step):
 
 
 def main():
+    if len(sys.argv) != 3:
+        print('Данных недостаточно!')
+        sys.exit(1)
+
     n, m = int(sys.argv[1]), int(sys.argv[2])
     print(''.join(map(str, path_way(n, m))))
 
